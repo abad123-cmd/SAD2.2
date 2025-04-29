@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Form with Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #1b1e27;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .contact-form div {
+            margin-bottom: 20px;
+        }
+        .contact-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .contact-form button {
+            background-color: red;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .summary {
+            display: none;
+            background-color: #2c2f3a;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .summary h3 {
+            margin-top: 0;
+            color: #00ff99;
+        }
+        .summary p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contact-form">
+    <form id="serviceForm">
+        <div>
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+        </div>
+        <div>
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" pattern="[0-9]{11}" placeholder="e.g. 09171234567" required>
+        </div>
+        <div>
+            <label for="datetime">Date & Time:</label>
+            <input type="datetime-local" id="datetime" name="datetime" required>
+        </div>
+        <div>
+            <label for="clientName">Client Name:</label>
+            <input type="text" id="clientName" name="clientName" required>
+        </div>
+        <div>
+            <label for="note">Additional Note:</label>
+            <textarea id="note" name="note" rows="4"></textarea>
+        </div>
+        <div>
+            <label for="truckLoad">Truck Load:</label>
+            <input type="number" id="truckLoad" name="truckLoad" required min="1">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<div class="summary" id="summary">
+    <h3>Service Summary</h3>
+    <div id="summaryContent"></div>
+    <p><strong>Gcash Number:</strong> 09304392399</p>
+</div>
+
+<script>
+    const form = document.getElementById('serviceForm');
+    const summary = document.getElementById('summary');
+    const summaryContent = document.getElementById('summaryContent');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop form from actually submitting
+
+        const formData = new FormData(form);
+        let output = '';
+
+        formData.forEach((value, key) => {
+            let formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+            output += `<p><strong>${formattedKey}:</strong> ${value}</p>`;
+        });
+
+        summaryContent.innerHTML = output;
+        summary.style.display = 'block';
+        form.style.display = 'none'; // Hide form after submitting (optional)
+    });
+</script>
+
+</body>
+</html>

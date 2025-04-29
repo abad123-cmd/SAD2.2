@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Truck</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/static/truckbg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        label {
+            color: #fff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background: #f1f1f1;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #ffffff;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+
+        .back-button:hover {
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <form action="{{ url_for('add_truck') }}" method="POST" class="form-container">
+        <h2>Add New Truck</h2>
+        <label for="truck_number">Truck Number:</label>
+        <input type="text" name="truck_number" id="truck_number" required>
+
+        <label for="model">Model:</label>
+        <input type="text" name="model" id="model" required>
+
+        <label for="plate_number">Plate Number:</label>
+        <input type="text" name="plate_number" id="plate_number" required>
+
+        <label for="capacity">Capacity:</label>
+        <input type="text" name="capacity" id="capacity" required>
+
+        <button type="submit">Add Truck</button>
+
+        <a href="{{ url_for('admindashboard') }}" class="back-button">← Back to Dashboard</a>
+    </form>
+</body>
+</html>
