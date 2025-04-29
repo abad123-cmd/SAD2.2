@@ -9,7 +9,7 @@ app.secret_key = "your_secret_key"
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "password",
+    "password": "",
     "database": "jctrucking_company"
 }
 
@@ -76,9 +76,9 @@ def login():
     username = request.form["username"].strip()
     password = request.form["password"].strip()
 
-    if not username or not password:
-        flash("Please fill in both fields.", "danger")
-        return redirect(url_for("home"))
+    # if not username or not password:
+    #     flash("Please fill in both fields.", "danger")
+    #     return redirect(url_for("home"))
 
     conn = get_db_connection()
     if conn is None:
@@ -211,6 +211,24 @@ def add_truck():
 @app.route("/tracker")
 def tracker():
     return render_template("customertracker.html")
+
+# USER MANAGEMENT PAGE
+@app.route("/userManagement")
+def userManagement():
+    if "username" not in session or not session.get("is_admin"):
+        flash("Access denied. You need to be an admin to view this page.", "danger")
+        return redirect(url_for("home"))
+    return render_template("userManagement.html", username=session["username"])
+
+# CUSTOMER MANAGEMENT PAGE
+@app.route("/customer")
+def customer():
+    if "username" not in session or not session.get("is_admin"):
+        flash("Access denied. You need to be an admin to view this page.", "danger")
+        return redirect(url_for("home"))
+    return render_template("customer.html", username=session["username"])
+
+
 
 # Clients Viewer Page ✅
 @app.route("/Show-Client")
