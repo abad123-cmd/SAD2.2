@@ -220,3 +220,62 @@ table {
     width: 100%;
     margin: 20px 0;
 }
+
+
+  .receipt {
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 300px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+  }
+  .receipt h2 {
+    text-align: center;
+  }
+  .receipt .details {
+    margin-bottom: 10px;
+  }
+  .receipt .details p {
+    margin: 5px 0;
+  }
+  .receipt .total {
+    font-weight: bold;
+    text-align: right;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+    
+    .receipt {
+        width: 300px;
+        border: 1px solid #000;
+        padding: 15px;
+        margin: 20px auto;
+        display: none; /* Hidden until Print Receipt is clicked */
+        background-color: black; /* Set background color to black */
+        color: white; /* Set text color to white for readability */
+    }
+    .receipt h3 {
+        text-align: center;
+        color: white; /* Center align heading and set text color */
+    }
+    .receipt p {
+        margin: 5px 0;
+        color: white; /* Set text color for paragraph elements */
+    }
+   
+    .gps-frame {
+        width: 100%;
+        height: 600px;
+        border: none;
+    }
+

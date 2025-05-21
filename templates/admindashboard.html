@@ -176,88 +176,210 @@
              Repeat rows as needed -->
         
     
-        <!-- Payment Details Table -->
-        <table>
-            <tr><th class="center" colspan="4">Payment Details</th></tr>
-            <tr>
-                <td>Total Amount</td>
-                <td colspan="3"><input type="number" id="total" oninput="calculateBalance()" placeholder="Enter total amount"></td>
-            </tr>
-            <tr>
-                <td>Amount Paid</td>
-                <td colspan="3"><input type="number" id="paid" oninput="calculateBalance()" placeholder="Enter paid amount"></td>
-            </tr>
-            <tr>
-                <td>Remaining Balance</td>
-                <td colspan="3"><input type="number" id="balance" readonly></td>
-            </tr>
-            <tr>
-                <td>Payment Method</td>
-                <td colspan="3">
-                    <select>
-                        <option>Cash</option>
-                        <option>GCash</option>
-                        <option>Bank Transfer</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Payment Date</td>
-                <td colspan="3"><input type="date"></td>
-            </tr>
-            <tr>
-                <td>Receipt/Reference No.</td>
-                <td colspan="3"><input type="text" placeholder="Enter receipt or reference number"></td>
-            </tr>
-            <!-- Status and Action Table -->
-            <table style="margin-top: 30px;">
+            <!-- Payment Details Table -->
+            <table>
+                <tr><th class="center" colspan="4">Payment Details</th></tr>
                 <tr>
-                <th class="center" colspan="4">Status</th>
+                    <td>Total Amount</td>
+                    <td colspan="3"><input type="number" id="total" oninput="calculateBalance()" placeholder="Enter total amount"></td>
                 </tr>
                 <tr>
-                <td>Payment Status</td>
-                <td colspan="3">
-                    <select>
-                    <option>Pending</option>
-                    <option>Partially Paid</option>
-                    <option>Paid</option>
-                    </select>
-                </td>
+                    <td>Amount Paid</td>
+                    <td colspan="3"><input type="number" id="paid" oninput="calculateBalance()" placeholder="Enter paid amount"></td>
                 </tr>
                 <tr>
-                <td>Remarks</td>
-                <td colspan="3">
-                    <input type="text" placeholder="Enter optional note">
-                </td>
+                    <td>Remaining Balance</td>
+                    <td colspan="3"><input type="number" id="balance" readonly></td>
                 </tr>
                 <tr>
-                <th class="center" colspan="4">Action (Admin Only)</th>
+                    <td>Payment Method</td>
+                    <td colspan="3">
+                        <select>
+                            <option>Cash</option>
+                            <option>GCash</option>
+                            <option>Bank Transfer</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
-                <td colspan="4" style="text-align: center;">
-                    <button>Approve Payment</button>
-                    <button>Mark as Paid</button>
-                    <button>Print Receipt</button>
-                    <button>Send Invoice</button>
-                </td>
+                    <td>Payment Date</td>
+                    <td colspan="3"><input type="date"></td>
                 </tr>
+                <tr>
+                    <td>Receipt/Reference No.</td>
+                    <td colspan="3"><input type="text" placeholder="Enter receipt or reference number"></td>
+                </tr>
+                <!-- Status and Action Table -->
+                <table style="margin-top: 30px;">
+                    <tr>
+                    <th class="center" colspan="4">Status</th>
+                    </tr>
+                    <tr>
+                    <td>Payment Status</td>
+                    <td colspan="3">
+                        <select>
+                        <option>Pending</option>
+                        <option>Partially Paid</option>
+                        <option>Paid</option>
+                        </select>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>Remarks</td>
+                    <td colspan="3">
+                        <input type="text" placeholder="Enter optional note">
+                    </td>
+                    </tr>
+                    <tr>
+                    <th class="center" colspan="4">Action (Admin Only)</th>
+                    </tr>
+                    <tr>
+                    <td colspan="4" style="text-align: center;">
+                        <button>Approve Payment</button>
+                        <button>Mark as Paid</button>
+                        <button>Print Receipt</button>
+                        <button>Send Invoice</button>
+                    </td>
+                    </tr>
 
-  
-        </table>
+    
+            </table>
+        
+            <script>
+                function calculateBalance() {
+                    const total = parseFloat(document.getElementById("total").value) || 0;
+                    const paid = parseFloat(document.getElementById("paid").value) || 0;
+                    const balance = total - paid;
+                    document.getElementById("balance").value = balance.toFixed(2);
+                }
+            </script>
+    </div>
+
+    <div id="homepage" class="container pt-4" style="border: 1px solid blue; height: 1200px;">
+        <h1 class="center">Receipt</h1>
+
+        <title>Payment Details</title>
+
+    </head>
+    <body>
+    
+        <form id="paymentForm">
+            <table>
+                <tr><th class="center" colspan="4">Payment Details</th></tr>
+                <tr>
+                    <td>Total Amount</td>
+                    <td colspan="3"><input type="number" id="total" oninput="calculateBalance()" placeholder="Enter total amount"></td>
+                </tr>
+                <tr>
+                    <td>Amount Paid</td>
+                    <td colspan="3"><input type="number" id="paid" oninput="calculateBalance()" placeholder="Enter paid amount"></td>
+                </tr>
+                <tr>
+                    <td>Remaining Balance</td>
+                    <td colspan="3"><input type="number" id="balance" readonly></td>
+                </tr>
+                <tr>
+                    <td>Payment Method</td>
+                    <td colspan="3">
+                        <select id="method">
+                            <option>Cash</option>
+                            <option>GCash</option>
+                            <option>Bank Transfer</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Payment Date</td>
+                    <td colspan="3"><input type="date" id="date"></td>
+                </tr>
+                <tr>
+                    <td>Receipt/Reference No.</td>
+                    <td colspan="3"><input type="text" id="ref" placeholder="Enter receipt or reference number"></td>
+                </tr>
+            </table>
+    
+            <table style="margin-top: 30px;">
+                <tr><th class="center" colspan="4">Status</th></tr>
+                <tr>
+                    <td>Payment Status</td>
+                    <td colspan="3">
+                        <select id="status">
+                            <option>Pending</option>
+                            <option>Partially Paid</option>
+                            <option>Paid</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Remarks</td>
+                    <td colspan="3"><input type="text" id="remarks" placeholder="Enter optional note"></td>
+                </tr>
+                <tr><th class="center" colspan="4">Action (Admin Only)</th></tr>
+                <tr>
+                    <td colspan="4" style="text-align: center;">
+                        <button type="button">Approve Payment</button>
+                        <button type="button">Mark as Paid</button>
+                        <button type="button" onclick="generateReceipt()">Print Receipt</button>
+                        <button type="button">Send Invoice</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    
+        <!-- Invoice Receipt Section -->
+        <div class="receipt" id="receipt">
+            <h3>Payment Receipt</h3>
+            <p><strong>Receipt No.:</strong> <span id="r_ref"></span></p>
+            <p><strong>Date:</strong> <span id="r_date"></span></p>
+            <p><strong>Total Amount:</strong> ₱<span id="r_total"></span></p>
+            <p><strong>Amount Paid:</strong> ₱<span id="r_paid"></span></p>
+            <p><strong>Balance:</strong> ₱<span id="r_balance"></span></p>
+            <p><strong>Method:</strong> <span id="r_method"></span></p>
+            <p><strong>Status:</strong> <span id="r_status"></span></p>
+            <p><strong>Remarks:</strong> <span id="r_remarks"></span></p>
+        </div>
     
         <script>
+
             function calculateBalance() {
                 const total = parseFloat(document.getElementById("total").value) || 0;
                 const paid = parseFloat(document.getElementById("paid").value) || 0;
                 const balance = total - paid;
                 document.getElementById("balance").value = balance.toFixed(2);
             }
+        
+    
+            function generateReceipt() {
+                // Get values
+                const total = document.getElementById("total").value;
+                const paid = document.getElementById("paid").value;
+                const balance = document.getElementById("balance").value;
+                const method = document.getElementById("method").value;
+                const date = document.getElementById("date").value;
+                const ref = document.getElementById("ref").value;
+                const status = document.getElementById("status").value;
+                const remarks = document.getElementById("remarks").value;
+    
+                // Fill in receipt
+                document.getElementById("r_total").textContent = parseFloat(total).toFixed(2);
+                document.getElementById("r_paid").textContent = parseFloat(paid).toFixed(2);
+                document.getElementById("r_balance").textContent = parseFloat(balance).toFixed(2);
+                document.getElementById("r_method").textContent = method;
+                document.getElementById("r_date").textContent = date;
+                document.getElementById("r_ref").textContent = ref;
+                document.getElementById("r_status").textContent = status;
+                document.getElementById("r_remarks").textContent = remarks;
+    
+                // Show receipt
+                document.getElementById("receipt").style.display = 'block';
+    
+                // Optional: trigger print (or user can screenshot)
+                // window.print();
+            }
         </script>
     </div>
 
-    <div id="homepage" class="container pt-4" style="border: 1px solid blue; height: 900px;">
-        <h1 class="center">Home Page</h1>
-    </div>
+    
     
     {% endblock %}
 </body>

@@ -27,48 +27,52 @@ def home():
     return render_template("index.html")
 
 # Register route
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    username = request.form["username"].strip()
-    full_name = request.form["full_name"].strip()
-    password = request.form["password"].strip()
-    email = request.form["email"].strip()
-    contact_no = request.form["contact_no"].strip()
-    age = request.form["age"].strip()
-    address = request.form["address"].strip()
+    if request.method == "POST":
+        username = request.form["username"].strip()
+        full_name = request.form["full_name"].strip()
+        password = request.form["password"].strip()
+        email = request.form["email"].strip()
+        contact_no = request.form["contact_no"].strip()
+        age = request.form["age"].strip()
+        address = request.form["address"].strip()
 
-    if not all([username, full_name, password, email, contact_no, age, address]):
-        flash("Please fill in all fields.", "danger")
-        return redirect(url_for("home"))
+        if not all([username, full_name, password, email, contact_no, age, address]):
+            flash("Please fill in all fields.", "danger")
+            return redirect(url_for("register"))
 
-    conn = get_db_connection()
-    if conn is None:
-        flash("Database connection failed!", "danger")
-        return redirect(url_for("home"))
+        conn = get_db_connection()
+        if conn is None:
+            flash("Database connection failed!", "danger")
+            return redirect(url_for("register"))
 
-    cursor = conn.cursor()
-    try:
-        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-        existing_user = cursor.fetchone()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            existing_user = cursor.fetchone()
 
-        if existing_user:
-            flash("Username already exists. Choose another.", "danger")
+            if existing_user:
+                flash("Username already exists. Choose another.", "danger")
+                return redirect(url_for("register"))
+
+            cursor.execute(""" 
+                INSERT INTO users (username, full_name, password, email, contact_no, age, address)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (username, full_name, password, email, contact_no, age, address))
+
+            conn.commit()
+            flash("Registration successful! Please log in.", "success")
             return redirect(url_for("home"))
+        except Exception as e:
+            flash(f"Error: {e}", "danger")
+            return redirect(url_for("register"))
+        finally:
+            cursor.close()
+            conn.close()
 
-        cursor.execute(""" 
-            INSERT INTO users (username, full_name, password, email, contact_no, age, address)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (username, full_name, password, email, contact_no, age, address))
+    return render_template("register.html")
 
-        conn.commit()
-        flash("Registration successful! Please log in.", "success")
-    except Exception as e:
-        flash(f"Error: {e}", "danger")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for("home"))
 
 # Login route
 @app.route("/login", methods=["POST"])
@@ -76,9 +80,9 @@ def login():
     username = request.form["username"].strip()
     password = request.form["password"].strip()
 
-    # if not username or not password:
-    #     flash("Please fill in both fields.", "danger")
-    #     return redirect(url_for("home"))
+    if not username or not password:
+        flash("Please fill in both fields.", "danger")
+        return redirect(url_for("home"))
 
     conn = get_db_connection()
     if conn is None:
@@ -120,7 +124,30 @@ def dashboard():
     if "username" not in session or session.get("is_admin") is None:
         flash("Please log in first.", "danger")
         return redirect(url_for("home"))
-    return render_template("usersdashboard.html", username=session["username"])
+
+    username = session["username"]
+    conn = get_db_connection()
+    if conn is None:
+        flash("Database connection failed!", "danger")
+        return redirect(url_for("home"))
+
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+
+        if user:
+            return render_template("usersdashboard.html", user=user)
+        else:
+            flash("User not found.", "danger")
+            return redirect(url_for("home"))
+    except Exception as e:
+        flash(f"Error: {e}", "danger")
+        return redirect(url_for("home"))
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # Admin Dashboard page
 @app.route("/admindashboard")
@@ -138,7 +165,7 @@ def logout():
     return redirect(url_for("home"))
 
 # Profile Page
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def profile():
     if "username" not in session:
         flash("Please log in first.", "danger")
@@ -152,6 +179,45 @@ def profile():
 
     cursor = conn.cursor()
     try:
+        if request.method == "POST":
+            # Retrieve form data
+            new_username = request.form["username"].strip()
+            full_name = request.form["full_name"].strip()
+            email = request.form["email"].strip()
+            contact_no = request.form["contact_no"].strip()
+            age = request.form["age"].strip()
+            address = request.form["address"].strip()
+            password = request.form["password"].strip()  # Password field
+
+            if not all([new_username, full_name, email, contact_no, age, address]):
+                flash("Please fill in all required fields.", "danger")
+                return redirect(url_for("profile"))
+
+            # If password is provided, update password as well
+            if password:
+                cursor.execute("""
+                    UPDATE users
+                    SET username = %s, full_name = %s, password = %s, email = %s, contact_no = %s, age = %s, address = %s
+                    WHERE username = %s
+                """, (new_username, full_name, password, email, contact_no, age, address, username))
+            else:
+                # If password is not provided, just update the other fields
+                cursor.execute("""
+                    UPDATE users
+                    SET username = %s, full_name = %s, email = %s, contact_no = %s, age = %s, address = %s
+                    WHERE username = %s
+                """, (new_username, full_name, email, contact_no, age, address, username))
+
+            conn.commit()
+
+            # Update session username if username is changed
+            if new_username != username:
+                session["username"] = new_username
+
+            flash("Profile updated successfully!", "success")
+            return redirect(url_for("profile"))
+        
+        # GET request to display the profile
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
 
@@ -212,7 +278,6 @@ def add_truck():
 def tracker():
     return render_template("customertracker.html")
 
-# USER MANAGEMENT PAGE
 @app.route("/userManagement")
 def userManagement():
     if "username" not in session or not session.get("is_admin"):
@@ -228,10 +293,8 @@ def customer():
         return redirect(url_for("home"))
     return render_template("customer.html", username=session["username"])
 
-
-
 # Clients Viewer Page ✅
-@app.route("/Show-Client")
+
 @app.route("/Show-Client")
 def show_client():
     conn = get_db_connection()
@@ -266,4 +329,40 @@ def submit():
 # Start the app (put this last)
 if __name__ == "__main__":
     print("Current working directory:", os.getcwd())
+    app.run(debug=True)
+
+@app.route('/')
+def login():
+    return '''
+    <form method="POST" action="/login">
+        <h2>Driver Login</h2>
+        <input type="text" name="username" placeholder="Username" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+    '''
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    username = request.form['username']
+    password = request.form['password']
+
+    query = "SELECT * FROM drivers WHERE username = %s AND password = %s"
+    cursor.execute(query, (username, password))
+    user = cursor.fetchone()
+
+    if user:
+        session['user'] = user['username']
+        return redirect('/dashboard')
+    else:
+        return "Invalid username or password"
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user' in session:
+        return render_template('driverdashboard.html')
+    else:
+        return redirect('/')
+
+if __name__ == '__main__':
     app.run(debug=True)
